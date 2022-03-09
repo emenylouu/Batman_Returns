@@ -1,1 +1,1 @@
-# Ic-NFT-minter
+# Ic_NFT_minter
