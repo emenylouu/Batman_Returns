@@ -36,15 +36,15 @@ async function onButtonPress(press) {
   var principalId = prin.toString();
   princOfCaller = prin;
   if (isConnected == true) {
+    window.location.replace("gallary.html");
     console.log('Plug wallet is connected'+ principalId);
     alert('Plug wallet is connected to PID: '+ principalId)
   } else if(isConnected == flase) {
     alert('Plug wallet connection was refused to PID: '+ principalId);
     console.log('Plug wallet connection was refused'+ principalId)
   }
-  //---------------------------------------------------------------------//
-
 }
+  //---------------------------------------------------------------------//
 
 // a function that redirects the user to the next page where he can mint his nft
 async function redirect(){
@@ -53,13 +53,17 @@ async function redirect(){
   console.log("this is" + name);
 }
 
+// a function that generates an NFT from a give URI
 async function genrateNft() {
+  const prin = await window.ic.plug.agent.getPrincipal();
+  // get the element of the element 'name'
   const name = document.getElementById("name").value.toString();
+  // call the mint function from the token standard;
   const mint = await ic_NFT_minter.mint(name);
   console.log("minted...");
   const mintId = mint.toString();
   console.log("this id is" + mintId);
-
+  alert( name + " has been minted by :" + prin + " this is the mint ID :" + mintId);
   document.getElementById("nft").src = await ic_NFT_minter.tokenURI(mint);
   document.getElementById("greeting").innerText = "this nft owner is " + princOfCaller + "\nthis token id is " + mintId;
 }
@@ -68,6 +72,8 @@ async function getBalances() {
   const name = document.getElementById("add").value.toString();
   const balances = await ic_NFT_minter.balanceOf(princOfCaller);
   console.log("balances");
+  alert('balances'+ balances);
+
 }
 
 document.addEventListener("DOMContentLoaded", main);

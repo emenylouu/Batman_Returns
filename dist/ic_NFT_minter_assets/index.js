@@ -17724,6 +17724,7 @@ async function onButtonPress(press) {
   var principalId = prin.toString();
   princOfCaller = prin;
   if (isConnected == true) {
+    window.location.replace("gallary.html");
     console.log('Plug wallet is connected'+ principalId);
     alert('Plug wallet is connected to PID: '+ principalId)
   } else if(isConnected == flase) {
@@ -17756,6 +17757,8 @@ async function getBalances() {
   const name = document.getElementById("add").value.toString();
   const balances = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.balanceOf(princOfCaller);
   console.log("balances");
+  alert('balances'+ balances);
+
 }
 
 document.addEventListener("DOMContentLoaded", main);
