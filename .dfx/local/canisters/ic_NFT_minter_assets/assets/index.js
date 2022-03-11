@@ -17505,9 +17505,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "init": () => (/* binding */ init)
 /* harmony export */ });
 const idlFactory = ({ IDL }) => {
-  return IDL.Service({ 'greet' : IDL.Func([IDL.Text], [IDL.Text], []) });
+  const TokenId = IDL.Nat;
+  const DRC721 = IDL.Service({
+    'approve' : IDL.Func([IDL.Principal, TokenId], [], []),
+    'balanceOf' : IDL.Func([IDL.Principal], [IDL.Opt(IDL.Nat)], []),
+    'getApproved' : IDL.Func([IDL.Nat], [IDL.Principal], []),
+    'isApprovedForAll' : IDL.Func(
+        [IDL.Principal, IDL.Principal],
+        [IDL.Bool],
+        [],
+      ),
+    'mint' : IDL.Func([IDL.Text], [IDL.Nat], []),
+    'name' : IDL.Func([], [IDL.Text], ['query']),
+    'ownerOf' : IDL.Func([TokenId], [IDL.Opt(IDL.Principal)], []),
+    'setApprovalForAll' : IDL.Func([IDL.Principal, IDL.Bool], [], ['oneway']),
+    'symbol' : IDL.Func([], [IDL.Text], ['query']),
+    'tokenURI' : IDL.Func([TokenId], [IDL.Opt(IDL.Text)], ['query']),
+    'transferFrom' : IDL.Func(
+        [IDL.Principal, IDL.Principal, IDL.Nat],
+        [],
+        ['oneway'],
+      ),
+  });
+  return DRC721;
 };
-const init = ({ IDL }) => { return []; };
+const init = ({ IDL }) => { return [IDL.Text, IDL.Text]; };
 
 
 /***/ }),
@@ -17665,24 +17687,88 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../declarations/ic_NFT_minter */ "./src/declarations/ic_NFT_minter/index.js");
 
+// const mintamount = 0; //Will be changed in the future so user has to pay to mint
 
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const button = e.target.querySelector("button");
+function main() {
+  const button = document.getElementById("connect");
+  const addbutton = document.getElementById("add");
+  const generatebut = document.getElementById("generate");
+  const div = document.getElementById("name");
 
+  button.addEventListener("click", onButtonPress);
+  addbutton.addEventListener("click", getBalances);
+  generatebut.addEventListener("click", genrateNft);
+  div.addEventListener("click",redirect);
+}
+
+// const canisters = ["ai7t5-aibaq-aaaaa-aaaaa-c"]; //for mainnet deployment
+// const host = "https://mainnet.dfinity.network"; //for mainnet deployment
+
+//---------------------------------------------------------------------//
+// Plug Connection 
+let princOfCaller = "";
+async function onButtonPress(press) {
+  press.target.disabled = true;
+  const isConnected = await window.ic.plug.isConnected();
+  if(!isConnected) {
+    await window.ic.plug.requestConnect();
+  }
+  console.log('requesting connection..');
+  alert('requesting connection..')
+  if (!window.ic.plug.agent) {
+    await window.ic.plug.createAgent();
+    console.log('agent created');
+    alert('agent created');
+  }
+  const prin = await window.ic.plug.agent.getPrincipal();
+  var principalId = prin.toString();
+  princOfCaller = prin;
+  if (isConnected == true) {
+    console.log('Plug wallet is connected'+ principalId);
+    alert('Plug wallet is connected to PID: '+ principalId)
+  } else if(isConnected == flase) {
+    alert('Plug wallet connection was refused to PID: '+ principalId);
+    console.log('Plug wallet connection was refused'+ principalId)
+  }
+  //---------------------------------------------------------------------//
+
+}
+
+// a function that redirects the user to the next page where he can mint his nft
+async function redirect(){
   const name = document.getElementById("name").value.toString();
+  window.location.replace("inde.html");
+  console.log("this is" + name);
+}
 
-  button.setAttribute("disabled", true);
+async function genrateNft() {
+  const name = document.getElementById("name").value.toString();
+  const mint = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.mint(name);
+  console.log("minted...");
+  const mintId = mint.toString();
+  console.log("this id is" + mintId);
+
+  document.getElementById("nft").src = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.tokenURI(mint);
+  document.getElementById("greeting").innerText = "this nft owner is " + princOfCaller + "\nthis token id is " + mintId;
+}
+
+async function getBalances() {
+  const name = document.getElementById("add").value.toString();
+  const balances = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.balanceOf(princOfCaller);
+  console.log("balances");
+}
+
+document.addEventListener("DOMContentLoaded", main);
+
+  //const name = document.getElementById("name").value.toString();
+
+  //button.setAttribute("disabled", true);
 
   // Interact with foo actor, calling the greet method
-  const greeting = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.greet(name);
+  //const greeting = await minter.greet(name);
 
-  button.removeAttribute("disabled");
+  //button.removeAttribute("disabled");
 
-  document.getElementById("greeting").innerText = greeting;
-
-  return false;
-});
 
 })();
 
