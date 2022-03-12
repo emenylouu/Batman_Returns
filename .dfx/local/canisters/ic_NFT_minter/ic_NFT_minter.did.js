@@ -1,9 +1,30 @@
 export const idlFactory = ({ IDL }) => {
+  const Nft = IDL.Record({
+    'url' : IDL.Text,
+    'creator' : IDL.Principal,
+    'principal' : IDL.Principal,
+    'tokenId' : IDL.Nat,
+  });
   const TokenId = IDL.Nat;
+  const NftToken = IDL.Record({
+    'url' : IDL.Text,
+    'creator' : IDL.Principal,
+    'principal' : IDL.Principal,
+    'tokenId' : IDL.Nat,
+  });
+  const NftId = IDL.Nat32;
   const DRC721 = IDL.Service({
+    'addNft' : IDL.Func([Nft], [], ['oneway']),
     'approve' : IDL.Func([IDL.Principal, TokenId], [], []),
     'balanceOf' : IDL.Func([IDL.Principal], [IDL.Opt(IDL.Nat)], []),
+    'getAllToken' : IDL.Func([], [IDL.Vec(NftToken)], ['query']),
     'getApproved' : IDL.Func([IDL.Nat], [IDL.Principal], []),
+    'getPrincipalsToken' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(NftToken)],
+        ['query'],
+      ),
+    'getTotalCountOfNfts' : IDL.Func([], [IDL.Nat], ['query']),
     'isApprovedForAll' : IDL.Func(
         [IDL.Principal, IDL.Principal],
         [IDL.Bool],
@@ -20,6 +41,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         ['oneway'],
       ),
+    'updateNft' : IDL.Func([NftId, IDL.Principal], [IDL.Bool], []),
   });
   return DRC721;
 };

@@ -1,6 +1,13 @@
+type Branch<K, V> = {left : Trie<K, V>; right : Trie<K, V>; size : Nat};
+type Leaf<K, V> = {keyvals : AssocList/1<Key<K>, V>; size : Nat};
+type Nft/1 = Nft;
+type NftId = Nat32;
 type TokenId = Nat;
 actor {
   stable var balancesEntries : [(Principal, Nat)];
+  stable var next : Nat32;
+  stable var nftBelogsTo :
+    {#branch : Branch<NftId, Nft/1>; #empty; #leaf : Leaf<NftId, Nft/1>};
   stable var operatorApprovalsEntries : [(Principal, [Principal])];
   stable var ownersEntries : [(TokenId, Principal)];
   stable var tokenApprovalsEntries : [(TokenId, Principal)];
