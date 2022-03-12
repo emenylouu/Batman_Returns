@@ -242,4 +242,6 @@ actor class DRC721(_name : Text, _symbol : Text) {
         tokenApprovalsEntries := [];
         operatorApprovalsEntries := [];
     };
+
+    
 };

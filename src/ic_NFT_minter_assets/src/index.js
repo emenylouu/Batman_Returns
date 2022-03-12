@@ -1,18 +1,29 @@
 import {ic_NFT_minter} from "../../declarations/ic_NFT_minter";
-// const mintamount = 0; //Will be changed in the future so user has to pay to mint
+const mintamount = 0; //Will be changed in the future so user has to pay to mint
+// This is library to use with principal that is provided by Dfinity
+import { Principal } from "@dfinity/principal";
 
 function main() {
   const button = document.getElementById("connect");
   const addbutton = document.getElementById("add");
   const generatebut = document.getElementById("generate");
-  const div = document.getElementById("name");
-
+  const nft1 = document.getElementById("nft1");
+  
+  console.log(nft1);
   button.addEventListener("click", onButtonPress);
   addbutton.addEventListener("click", getBalances);
   generatebut.addEventListener("click", genrateNft);
-  div.addEventListener("click",redirect);
+  mint.addEventListener("click",mintme);
 }
+async function mintme(){
+  const uri = document.getElementById("uri").value.toString();
 
+  const mint = await ic_NFT_minter.mint(uri);
+  console.log("minted...");
+  const mintId = mint.toString();
+  console.log("this id is" + mintId);
+
+      }
 // const canisters = ["ai7t5-aibaq-aaaaa-aaaaa-c"]; //for mainnet deployment
 // const host = "https://mainnet.dfinity.network"; //for mainnet deployment
 
@@ -36,22 +47,16 @@ async function onButtonPress(press) {
   var principalId = prin.toString();
   princOfCaller = prin;
   if (isConnected == true) {
-    window.location.replace("gallary.html");
+    window.location.replace("gallery.html");
     console.log('Plug wallet is connected'+ principalId);
     alert('Plug wallet is connected to PID: '+ principalId)
   } else if(isConnected == flase) {
+    window.location.replace("error.html");
     alert('Plug wallet connection was refused to PID: '+ principalId);
     console.log('Plug wallet connection was refused'+ principalId)
   }
 }
   //---------------------------------------------------------------------//
-
-// a function that redirects the user to the next page where he can mint his nft
-async function redirect(){
-  const name = document.getElementById("name").value.toString();
-  window.location.replace("inde.html");
-  console.log("this is" + name);
-}
 
 // a function that generates an NFT from a give URI
 async function genrateNft() {

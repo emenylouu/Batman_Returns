@@ -17556,7 +17556,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // CANISTER_ID is replaced by webpack based on node environment
-const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai";
+const canisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
 /**
  * 
@@ -17686,21 +17686,33 @@ var __webpack_exports__ = {};
   \***********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../declarations/ic_NFT_minter */ "./src/declarations/ic_NFT_minter/index.js");
+/* harmony import */ var _dfinity_principal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @dfinity/principal */ "./node_modules/@dfinity/principal/lib/esm/index.js");
 
-// const mintamount = 0; //Will be changed in the future so user has to pay to mint
+const mintamount = 0; //Will be changed in the future so user has to pay to mint
+// This is library to use with principal that is provided by Dfinity
+
 
 function main() {
   const button = document.getElementById("connect");
   const addbutton = document.getElementById("add");
   const generatebut = document.getElementById("generate");
-  const div = document.getElementById("name");
-
+  const nft1 = document.getElementById("nft1");
+  
+  console.log(nft1);
   button.addEventListener("click", onButtonPress);
   addbutton.addEventListener("click", getBalances);
   generatebut.addEventListener("click", genrateNft);
-  div.addEventListener("click",redirect);
+  mint.addEventListener("click",mintme);
 }
+async function mintme(){
+  const uri = document.getElementById("uri").value.toString();
 
+  const mint = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.mint(uri);
+  console.log("minted...");
+  const mintId = mint.toString();
+  console.log("this id is" + mintId);
+
+      }
 // const canisters = ["ai7t5-aibaq-aaaaa-aaaaa-c"]; //for mainnet deployment
 // const host = "https://mainnet.dfinity.network"; //for mainnet deployment
 
@@ -17724,31 +17736,28 @@ async function onButtonPress(press) {
   var principalId = prin.toString();
   princOfCaller = prin;
   if (isConnected == true) {
-    window.location.replace("gallary.html");
+    window.location.replace("gallery.html");
     console.log('Plug wallet is connected'+ principalId);
     alert('Plug wallet is connected to PID: '+ principalId)
   } else if(isConnected == flase) {
+    window.location.replace("error.html");
     alert('Plug wallet connection was refused to PID: '+ principalId);
     console.log('Plug wallet connection was refused'+ principalId)
   }
+}
   //---------------------------------------------------------------------//
 
-}
-
-// a function that redirects the user to the next page where he can mint his nft
-async function redirect(){
-  const name = document.getElementById("name").value.toString();
-  window.location.replace("inde.html");
-  console.log("this is" + name);
-}
-
+// a function that generates an NFT from a give URI
 async function genrateNft() {
+  const prin = await window.ic.plug.agent.getPrincipal();
+  // get the element of the element 'name'
   const name = document.getElementById("name").value.toString();
+  // call the mint function from the token standard;
   const mint = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.mint(name);
   console.log("minted...");
   const mintId = mint.toString();
   console.log("this id is" + mintId);
-
+  alert( name + " has been minted by :" + prin + " this is the mint ID :" + mintId);
   document.getElementById("nft").src = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.tokenURI(mint);
   document.getElementById("greeting").innerText = "this nft owner is " + princOfCaller + "\nthis token id is " + mintId;
 }
