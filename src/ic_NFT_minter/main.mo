@@ -7,9 +7,100 @@ import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import T "dip721_types";
+import Trie "mo:base/Trie";
+import Nat32 "mo:base/Nat32";
+import Nft "./nft";
+import NftToken "./nftToken";
 
 actor class DRC721(_name : Text, _symbol : Text) {
-    
+    //###### The nfts manipulation #######//
+// -----------------------------------------------------------------
+ public type NftId = Nat32;
+  public type Nft = Nft.Nft;
+  public type NftToken = NftToken.NftToken;
+
+  // counter for data-history 
+  private stable var next : NftId = 1;
+
+  // data storage 
+  private stable var nftBelogsTo : Trie.Trie<NftId, Nft> = Trie.empty();
+
+  // add a new mint nft to the data-history storage
+  public func addNft(nft : Nft){
+    let nftId = next;
+    next += 1;
+    nftBelogsTo := Trie.replace(
+      nftBelogsTo,
+      key(nftId),
+      Nat32.equal,
+      ?nft,
+    ).0;
+  };
+
+  // Update an Nft History
+  public func updateNft(nftId : NftId, newPrincipal : Principal) :async Bool {
+    let oldNftItem = Trie.get(nftBelogsTo, key(nftId), Nat32.equal);
+    let exists = Option.isSome(oldNftItem);
+
+    switch(oldNftItem) {
+      case (null) {};
+      case (?Nft) {
+          if (exists) { 
+            var _oldNftItem : Nft = Option.get(oldNftItem, Nft);
+            var newNftItem : Nft = {
+              tokenId = _oldNftItem.tokenId;
+              principal = newPrincipal;
+              url = _oldNftItem.url;
+              creator = _oldNftItem.principal;
+            };
+
+            nftBelogsTo := Trie.replace(
+              nftBelogsTo,
+              key(nftId),
+              Nat32.equal,
+              ?newNftItem,
+            ).0;
+          };
+      };
+    };
+
+    return exists;
+  };
+
+  // Get the total count of minted NFTs per principal
+  public query func getTotalCountOfNfts() : async Nat {
+    Trie.size(nftBelogsTo);
+  };
+
+
+  // get all minted nft per proncipal
+  public query func getPrincipalsToken (principal: Principal) : async [NftToken]  { 
+    let result : Trie.Trie<NftId, Nft> = Trie.filter<NftId, Nft>(nftBelogsTo, func (k, v) { v.principal == principal });  
+    Trie.toArray<NftId, Nft, NftToken>(result, transformNft);
+  };
+
+  // a query function that returns an array of all minted nft from the trie 
+  public query func getAllToken () : async [NftToken]  { 
+    Trie.toArray<NftId, Nft, NftToken>(nftBelogsTo, transformNft);
+  };
+
+  // Create a trie key from an nft identifier
+  private func key(x : NftId) : Trie.Key<NftId> {
+    return { hash = x; key = x };
+  };
+
+  // Reduce an NFTs to less properties which are needed
+  private func transformNft(nftId:NftId, nft:Nft): NftToken{
+    let newToken : NftToken = {
+      tokenId = nft.tokenId;
+      url = nft.url;
+      creator = nft.creator;
+      principal = nft.principal;
+    };
+    return newToken;
+  };
+// -----------------------------------------------------------------
+
     //Using DIP721 standard, adapted from https://github.com/SuddenlyHazel/DIP721/blob/main/src/DIP721/DIP721.mo
     private stable var tokenPk : Nat = 0;
 
