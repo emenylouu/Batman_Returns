@@ -1,35 +1,22 @@
 import {ic_NFT_minter} from "../../declarations/ic_NFT_minter";
-const mintamount = 0; //Will be changed in the future so user has to pay to mint
-// This is library to use with principal that is provided by Dfinity
 import { Principal } from "@dfinity/principal";
+import{mint_principal,getPrincipalsToken,getAllToken,get_balance,transferFrom} from "./be.js"
 
 function main() {
   const button = document.getElementById("connect");
   const addbutton = document.getElementById("add");
   const generatebut = document.getElementById("generate");
-  const nft1 = document.getElementById("nft1");
-  
-  console.log(nft1);
   button.addEventListener("click", onButtonPress);
   addbutton.addEventListener("click", getBalances);
   generatebut.addEventListener("click", genrateNft);
-  mint.addEventListener("click",mintme);
 }
-async function mintme(){
-  const uri = document.getElementById("uri").value.toString();
+document.addEventListener("DOMContentLoaded", main);
 
-  const mint = await ic_NFT_minter.mint(uri);
-  console.log("minted...");
-  const mintId = mint.toString();
-  console.log("this id is" + mintId);
+//---------------------------- PLUG CONNECTION -------------------------//
 
-      }
-// const canisters = ["ai7t5-aibaq-aaaaa-aaaaa-c"]; //for mainnet deployment
-// const host = "https://mainnet.dfinity.network"; //for mainnet deployment
-
-//---------------------------------------------------------------------//
-// Plug Connection 
 let princOfCaller = "";
+const name = document.getElementById("name").src.toString();
+
 async function onButtonPress(press) {
   press.target.disabled = true;
   const isConnected = await window.ic.plug.isConnected();
@@ -58,37 +45,36 @@ async function onButtonPress(press) {
 }
   //---------------------------------------------------------------------//
 
-// a function that generates an NFT from a give URI
+// a function that generates an NFT from a give 
 async function genrateNft() {
-  const prin = await window.ic.plug.agent.getPrincipal();
-  // get the element of the element 'name'
-  const name = document.getElementById("name").value.toString();
-  // call the mint function from the token standard;
-  const mint = await ic_NFT_minter.mint(name);
+  const name = document.getElementById("name").src.toString();
+  console.log(name);
+  const p = await window.ic.plug.agent.getPrincipal();
+  const mint = await minter.mint(name);
+  mint_principal(name,p);
   console.log("minted...");
   const mintId = mint.toString();
   console.log("this id is" + mintId);
-  alert( name + " has been minted by :" + prin + " this is the mint ID :" + mintId);
-  document.getElementById("nft").src = await ic_NFT_minter.tokenURI(mint);
-  document.getElementById("greeting").innerText = "this nft owner is " + princOfCaller + "\nthis token id is " + mintId;
+  var x = await minter.tokenURI(mint);
+  console.log(x+"this nft owner is " + princOfCaller + "\nthis token id is " + mintId);
 }
 
 async function getBalances() {
-  const name = document.getElementById("add").value.toString();
+  const nft = document.getElementById("add").value.toString();
   const balances = await ic_NFT_minter.balanceOf(princOfCaller);
   console.log("balances");
   alert('balances'+ balances);
 
 }
 
-document.addEventListener("DOMContentLoaded", main);
+//  async function refreshUserBalance() {
+//   const balance = await this.icService.get_balance(this.userWalletPrincipal);
+//   this.userWalletBalance = (balance ? balance : 0);
+// }
 
-  //const name = document.getElementById("name").value.toString();
+// ############ BACKEND FUNCTIONS #############
 
-  //button.setAttribute("disabled", true);
 
-  // Interact with foo actor, calling the greet method
-  //const greeting = await minter.greet(name);
 
-  //button.removeAttribute("disabled");
-
+  
+  

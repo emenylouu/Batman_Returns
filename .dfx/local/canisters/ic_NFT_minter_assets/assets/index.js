@@ -17537,6 +17537,7 @@ const idlFactory = ({ IDL }) => {
         [],
       ),
     'mint' : IDL.Func([IDL.Text], [IDL.Nat], []),
+    'mint_principal' : IDL.Func([IDL.Text, IDL.Principal], [IDL.Nat], []),
     'name' : IDL.Func([], [IDL.Text], ['query']),
     'ownerOf' : IDL.Func([TokenId], [IDL.Opt(IDL.Principal)], []),
     'setApprovalForAll' : IDL.Func([IDL.Principal, IDL.Bool], [], ['oneway']),
@@ -17578,7 +17579,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // CANISTER_ID is replaced by webpack based on node environment
-const canisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+const canisterId = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 
 /**
  * 
@@ -17610,6 +17611,54 @@ const canisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai";
  * @type {import("@dfinity/agent").ActorSubclass<import("./ic_NFT_minter.did.js")._SERVICE>}
  */
  const ic_NFT_minter = createActor(canisterId);
+
+
+/***/ }),
+
+/***/ "./src/ic_NFT_minter_assets/src/be.js":
+/*!********************************************!*\
+  !*** ./src/ic_NFT_minter_assets/src/be.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "mint_principal": () => (/* binding */ mint_principal),
+/* harmony export */   "getPrincipalsToken": () => (/* binding */ getPrincipalsToken),
+/* harmony export */   "getAllToken": () => (/* binding */ getAllToken),
+/* harmony export */   "get_balance": () => (/* binding */ get_balance),
+/* harmony export */   "transferFrom": () => (/* binding */ transferFrom)
+/* harmony export */ });
+/* harmony import */ var _dfinity_principal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @dfinity/principal */ "./node_modules/@dfinity/principal/lib/esm/index.js");
+
+
+        async function mint_principal(uri , p){
+        return await ic_NFT_minter.mint_principal(uri, p);  
+    };
+  
+     async function getPrincipalsToken (principal){  
+        const p = _dfinity_principal__WEBPACK_IMPORTED_MODULE_0__.Principal.fromText(principal);
+        return await ic_NFT_minter.getPrincipalsToken(p); 
+    }
+  
+     async function getAllToken (){
+        return await ic_NFT_minter.getAllToken();    
+    }
+  
+     async function get_balance(principal){
+        const p = _dfinity_principal__WEBPACK_IMPORTED_MODULE_0__.Principal.fromText(principal);
+        const response = await ic_NFT_minter.balanceOf(p);
+        if (response?.length === 0) return 0;
+        return response; 
+    }
+  
+     async function transferFrom(owner, newOwner, tokenId){
+        const from = _dfinity_principal__WEBPACK_IMPORTED_MODULE_0__.Principal.fromText(owner);
+        const to = _dfinity_principal__WEBPACK_IMPORTED_MODULE_0__.Principal.fromText(newOwner);
+        return await ic_NFT_minter.transferFrom(from, to, tokenId, tokenId);
+   
+    }
 
 
 /***/ })
@@ -17709,38 +17758,26 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../declarations/ic_NFT_minter */ "./src/declarations/ic_NFT_minter/index.js");
 /* harmony import */ var _dfinity_principal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @dfinity/principal */ "./node_modules/@dfinity/principal/lib/esm/index.js");
+/* harmony import */ var _be_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./be.js */ "./src/ic_NFT_minter_assets/src/be.js");
 
-const mintamount = 0; //Will be changed in the future so user has to pay to mint
-// This is library to use with principal that is provided by Dfinity
+
 
 
 function main() {
   const button = document.getElementById("connect");
   const addbutton = document.getElementById("add");
   const generatebut = document.getElementById("generate");
-  const nft1 = document.getElementById("nft1");
-  
-  console.log(nft1);
   button.addEventListener("click", onButtonPress);
   addbutton.addEventListener("click", getBalances);
   generatebut.addEventListener("click", genrateNft);
-  mint.addEventListener("click",mintme);
 }
-async function mintme(){
-  const uri = document.getElementById("uri").value.toString();
+document.addEventListener("DOMContentLoaded", main);
 
-  const mint = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.mint(uri);
-  console.log("minted...");
-  const mintId = mint.toString();
-  console.log("this id is" + mintId);
+//---------------------------- PLUG CONNECTION -------------------------//
 
-      }
-// const canisters = ["ai7t5-aibaq-aaaaa-aaaaa-c"]; //for mainnet deployment
-// const host = "https://mainnet.dfinity.network"; //for mainnet deployment
-
-//---------------------------------------------------------------------//
-// Plug Connection 
 let princOfCaller = "";
+const name = document.getElementById("name").src.toString();
+
 async function onButtonPress(press) {
   press.target.disabled = true;
   const isConnected = await window.ic.plug.isConnected();
@@ -17771,39 +17808,37 @@ async function onButtonPress(press) {
 
 // a function that generates an NFT from a give URI
 async function genrateNft() {
-  const prin = await window.ic.plug.agent.getPrincipal();
-  // get the element of the element 'name'
-  const name = document.getElementById("name").value.toString();
-  // call the mint function from the token standard;
-  const mint = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.mint(name);
+  const name = document.getElementById("name").src.toString();
+  console.log(name);
+  const p = await window.ic.plug.agent.getPrincipal();
+  const mint = await minter.mint(name);
+  (0,_be_js__WEBPACK_IMPORTED_MODULE_2__.mint_principal)(name,p);
   console.log("minted...");
   const mintId = mint.toString();
   console.log("this id is" + mintId);
-  alert( name + " has been minted by :" + prin + " this is the mint ID :" + mintId);
-  document.getElementById("nft").src = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.tokenURI(mint);
-  document.getElementById("greeting").innerText = "this nft owner is " + princOfCaller + "\nthis token id is " + mintId;
+  var x = await minter.tokenURI(mint);
+  console.log(x+"this nft owner is " + princOfCaller + "\nthis token id is " + mintId);
 }
 
 async function getBalances() {
-  const name = document.getElementById("add").value.toString();
+  const nft = document.getElementById("add").value.toString();
   const balances = await _declarations_ic_NFT_minter__WEBPACK_IMPORTED_MODULE_0__.ic_NFT_minter.balanceOf(princOfCaller);
   console.log("balances");
   alert('balances'+ balances);
 
 }
 
-document.addEventListener("DOMContentLoaded", main);
+//  async function refreshUserBalance() {
+//   const balance = await this.icService.get_balance(this.userWalletPrincipal);
+//   this.userWalletBalance = (balance ? balance : 0);
+// }
 
-  //const name = document.getElementById("name").value.toString();
-
-  //button.setAttribute("disabled", true);
-
-  // Interact with foo actor, calling the greet method
-  //const greeting = await minter.greet(name);
-
-  //button.removeAttribute("disabled");
+// ############ BACKEND FUNCTIONS #############
 
 
+
+  
+  
 })();
 
 /******/ })()

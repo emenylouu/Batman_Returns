@@ -99,6 +99,24 @@ actor class DRC721(_name : Text, _symbol : Text) {
     };
     return newToken;
   };
+
+   public func mint_principal(uri : Text, principal : Principal) : async Nat {
+    tokenPk += 1;
+    _mint(principal, tokenPk, uri);
+    
+    let _nft : Nft = {
+      tokenId = tokenPk; 
+      principal = principal;
+      url = uri;
+      creator = principal;
+    };
+    
+    //D.print(debug_show(_nft));
+    addNft(_nft);
+    return tokenPk;
+  };
+
+
 // -----------------------------------------------------------------
 
     //Using DIP721 standard, adapted from https://github.com/SuddenlyHazel/DIP721/blob/main/src/DIP721/DIP721.mo
