@@ -1,5 +1,5 @@
 {
-  "name": "ic_NFT_minter_assets",
+  "name": "nft_minter_assets",
   "version": "0.1.0",
   "description": "Internet Computer starter application",
   "keywords": [
@@ -16,7 +16,6 @@
     "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete src/declarations"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-top-level-await": "^7.14.5",
     "@dfinity/agent": "0.10.3",
     "@dfinity/candid": "0.10.3",
     "@dfinity/principal": "0.10.3",
@@ -25,6 +24,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "events": "3.3.0",
     "html-webpack-plugin": "5.5.0",
+    "ic-stoic-identity": "^2.0.0",
     "process": "0.11.10",
     "stream-browserify": "3.0.0",
     "terser-webpack-plugin": "5.2.5",
@@ -38,9 +38,5 @@
     "last 2 firefox version",
     "last 2 safari version",
     "last 2 edge version"
-  ],
-  "dependencies": {
-    "@psychedelic/plug-connect": "^0.1.4",
-    "html-to-react": "^1.4.8"
-  }
+  ]
 }

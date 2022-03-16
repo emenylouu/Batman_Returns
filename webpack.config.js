@@ -38,7 +38,7 @@ const canisterEnvVariables = initCanisterEnv();
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const frontendDirectory = "ic_NFT_minter_assets";
+const frontendDirectory = "nft_minter_assets";
 
 const asset_entry = path.join("src", frontendDirectory, "src", "index.html");
 

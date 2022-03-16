@@ -1,19 +1,19 @@
 {
   "canisters": {
-    "ic_NFT_minter": {
-      "main": "src/ic_NFT_minter/main.mo",
+    "nft_minter": {
+      "main": "src/nft_minter/main.mo",
       "type": "motoko"
     },
-    "ic_NFT_minter_assets": {
+    "nft_minter_assets": {
       "dependencies": [
-        "ic_NFT_minter"
+        "nft_minter"
       ],
       "frontend": {
-        "entrypoint": "src/ic_NFT_minter_assets/src/index.html"
+        "entrypoint": "src/nft_minter_assets/src/index.html"
       },
       "source": [
-        "src/ic_NFT_minter_assets/assets",
-        "dist/ic_NFT_minter_assets/"
+        "src/nft_minter_assets/assets",
+        "dist/nft_minter_assets/"
       ],
       "type": "assets"
     }
