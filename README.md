@@ -2,6 +2,11 @@
 
 live link on the IC main net: https://hfbcr-daaaa-aaaai-qieta-cai.raw.ic0.app/
 
+## NOTE: 
+
+- this project is not totally done
+- If one of the NFTs didn't mint, try and connect to your Plug wallet again.
+- 
 To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
 
 To learn more before you start working with nft_minter, see the following documentation available online:
