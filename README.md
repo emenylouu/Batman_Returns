@@ -1,6 +1,6 @@
-# nft_minter
+# Batman Returns Is an NFT Gallery where you can mint some cool Batman NFTs
 
-Welcome to your new nft_minter project and to the internet computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+live link on the IC main net: https://hfbcr-daaaa-aaaai-qieta-cai.raw.ic0.app/
 
 To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
 
